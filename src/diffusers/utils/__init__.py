@@ -35,7 +35,11 @@ from .constants import (
 from .deprecation_utils import deprecate
 from .doc_utils import replace_example_docstring
 from .dynamic_modules_utils import get_class_from_dynamic_module
-from .hub_utils import HF_HUB_OFFLINE, http_user_agent
+from .hub_utils import (
+    HF_HUB_OFFLINE,
+    extract_commit_hash,
+    http_user_agent,
+)
 from .import_utils import (
     ENV_VARS_TRUE_AND_AUTO_VALUES,
     ENV_VARS_TRUE_VALUES,
@@ -51,6 +55,7 @@ from .import_utils import (
     is_k_diffusion_available,
     is_k_diffusion_version,
     is_librosa_available,
+    is_note_seq_available,
     is_omegaconf_available,
     is_onnx_available,
     is_safetensors_available,
@@ -87,6 +92,8 @@ if is_torch_available():
         torch_all_close,
         torch_device,
     )
+
+from .testing_utils import export_to_video
 
 
 logger = get_logger(__name__)
