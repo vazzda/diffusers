@@ -93,6 +93,12 @@ def parse_args(input_args=None):
         help="The prompt used to generate sample outputs to save.",
     )
     parser.add_argument(
+        "--save_sample_prompt_sanity",
+        type=str,
+        default=None,
+        help="The prompt used to generate sample outputs to save.",
+    )
+    parser.add_argument(
         "--save_sample_negative_prompt",
         type=str,
         default=None,
@@ -756,7 +762,26 @@ def main(args):
                             num_inference_steps=args.save_infer_steps,
                             generator=g_cuda
                         ).images
-                        images[0].save(os.path.join(sample_dir, f"{i}.png"))
+                        images[0].save(os.path.join(sample_dir, f"00{i}.png"))
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+
+            if args.save_sample_prompt_sanity is not None:
+                pipeline = pipeline.to(accelerator.device)
+                g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
+                pipeline.set_progress_bar_config(disable=True)
+                sample_dir = os.path.join(save_dir, "samples")
+                os.makedirs(sample_dir, exist_ok=True)
+                with torch.autocast("cuda"), torch.inference_mode():
+                    for i in tqdm(range(args.n_save_sample), desc="Generating samples"):
+                        images = pipeline(
+                            args.save_sample_prompt_sanity,
+                            negative_prompt=args.save_sample_negative_prompt,
+                            guidance_scale=args.save_guidance_scale,
+                            num_inference_steps=args.save_infer_steps,
+                            generator=g_cuda
+                        ).images
+                        images[0].save(os.path.join(sample_dir, f"00{i}_sanity.png"))
                 del pipeline
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
