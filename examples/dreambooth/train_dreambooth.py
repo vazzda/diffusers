@@ -99,6 +99,18 @@ def parse_args(input_args=None):
         help="The prompt used to generate sample outputs to save.",
     )
     parser.add_argument(
+        "--save_sample_prompt_sanity_celeb",
+        type=str,
+        default=None,
+        help="The prompt used to generate sample outputs to save.",
+    )
+    parser.add_argument(
+        "--save_sample_prompt_sanity_celeb_mod",
+        type=str,
+        default=None,
+        help="The prompt used to generate sample outputs to save.",
+    )
+    parser.add_argument(
         "--save_sample_negative_prompt",
         type=str,
         default=None,
@@ -720,6 +732,23 @@ def main(args):
     logger.info(f"  Total optimization steps = {args.max_train_steps}")
 
     def save_weights(step):
+        # Vazzda's shame code
+        # Creating dir for examples
+        root_dir_samples = os.path.join(args.output_dir, "_samples")
+        os.makedirs(root_dir_samples, exist_ok=True)
+        for i in range(args.n_save_sample):
+            new_sample_dir = os.path.join(root_dir_samples, f"{i:03d}")
+            os.makedirs(new_sample_dir, exist_ok=True)
+
+            new_sample_prompt_dir = os.path.join(new_sample_dir, "0_prompt")
+            os.makedirs(new_sample_prompt_dir, exist_ok=True)
+            new_sample_sanity_dir = os.path.join(new_sample_dir, "1_sanity")
+            os.makedirs(new_sample_sanity_dir, exist_ok=True)
+            new_sample_celeb_dir = os.path.join(new_sample_dir, "2_celeb")
+            os.makedirs(new_sample_celeb_dir, exist_ok=True)
+            new_sample_celeb_mod_dir = os.path.join(new_sample_dir, "3_celeb_mod")
+            os.makedirs(new_sample_celeb_mod_dir, exist_ok=True)
+
         # Create the pipeline using using the trained modules and save it.
         if accelerator.is_main_process:
             if args.train_text_encoder:
@@ -742,7 +771,7 @@ def main(args):
             pipeline.scheduler = DDIMScheduler.from_config(pipeline.scheduler.config)
             if is_xformers_available():
                 pipeline.enable_xformers_memory_efficient_attention()
-            save_dir = os.path.join(args.output_dir, f"{step}")
+            save_dir = os.path.join(args.output_dir, f"{step:05d}")
             pipeline.save_pretrained(save_dir)
             with open(os.path.join(save_dir, "args.json"), "w") as f:
                 json.dump(args.__dict__, f, indent=2)
@@ -762,7 +791,7 @@ def main(args):
                             num_inference_steps=args.save_infer_steps,
                             generator=g_cuda
                         ).images
-                        images[0].save(os.path.join(sample_dir, f"00{i}.png"))
+                        images[0].save(os.path.join(root_dir_samples , f"{i:03d}/0_prompt/{step:05d}_{i}.png"))
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
 
@@ -781,7 +810,45 @@ def main(args):
                             num_inference_steps=args.save_infer_steps,
                             generator=g_cuda
                         ).images
-                        images[0].save(os.path.join(sample_dir, f"00{i}_sanity.png"))
+                        images[0].save(os.path.join(root_dir_samples , f"{i:03d}/1_sanity/{step:05d}_{i}.png"))
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+
+            if args.save_sample_prompt_sanity_celeb is not None:
+                pipeline = pipeline.to(accelerator.device)
+                g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
+                pipeline.set_progress_bar_config(disable=True)
+                sample_dir = os.path.join(save_dir, "samples")
+                os.makedirs(sample_dir, exist_ok=True)
+                with torch.autocast("cuda"), torch.inference_mode():
+                    for i in tqdm(range(args.n_save_sample), desc="Generating samples"):
+                        images = pipeline(
+                            args.save_sample_prompt_sanity_celeb,
+                            negative_prompt=args.save_sample_negative_prompt,
+                            guidance_scale=args.save_guidance_scale,
+                            num_inference_steps=args.save_infer_steps,
+                            generator=g_cuda
+                        ).images
+                        images[0].save(os.path.join(root_dir_samples , f"{i:03d}/2_celeb/{step:05d}_{i}.png"))
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+
+            if args.save_sample_prompt_sanity_celeb_mod is not None:
+                pipeline = pipeline.to(accelerator.device)
+                g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
+                pipeline.set_progress_bar_config(disable=True)
+                sample_dir = os.path.join(save_dir, "samples")
+                os.makedirs(sample_dir, exist_ok=True)
+                with torch.autocast("cuda"), torch.inference_mode():
+                    for i in tqdm(range(args.n_save_sample), desc="Generating samples"):
+                        images = pipeline(
+                            args.save_sample_prompt_sanity_celeb_mod,
+                            negative_prompt=args.save_sample_negative_prompt,
+                            guidance_scale=args.save_guidance_scale,
+                            num_inference_steps=args.save_infer_steps,
+                            generator=g_cuda
+                        ).images
+                        images[0].save(os.path.join(root_dir_samples , f"{i:03d}/3_celeb_mod/{step:05d}_{i}.png"))
                 del pipeline
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()

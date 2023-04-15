@@ -21,9 +21,11 @@ accelerate launch train_dreambooth.py \
   --lr_warmup_steps=0 \
   --num_class_images=300 \
   --sample_batch_size=1 \
-  --n_save_sample=7 \
-  --max_train_steps=2400 \
-  --save_interval=50 \
+  --n_save_sample=5 \
+  --max_train_steps=3600 \
+  --save_interval=100 \
   --save_sample_prompt="photo of @zwx woman" \
   --save_sample_prompt_sanity="photo of @zwx woman by Tomer Hanuka" \
+  --save_sample_prompt_sanity_celeb="photo of Emma Stone" \
+  --save_sample_prompt_sanity_celeb_mod="photo of Emma Stone by Tomer Hanuka" \
   --concepts_list="concepts_list.json"
