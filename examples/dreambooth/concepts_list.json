@@ -1,8 +1,20 @@
 [
     {
-        "instance_prompt":      "photo of @zwx",
-        "class_prompt":         "photo of woman",
-        "instance_data_dir":    "/mnt/c/_wrk/SD/__target/source",
-        "class_data_dir":       "/mnt/c/_wrk/SD/__target/class"
+        "instance_prompt":      "azwx jenniferaniston",
+        "class_prompt":         "jenniferaniston",
+        "instance_data_dir":    "/mnt/c/_wrk/SD/__target/source_1",
+        "class_data_dir":       "/mnt/c/_wrk/SD/__target/class_1"
+    },
+    {
+        "instance_prompt":      "ohwx courtneycox",
+        "class_prompt":         "emmastone",
+        "instance_data_dir":    "/mnt/c/_wrk/SD/__target/source_2",
+        "class_data_dir":       "/mnt/c/_wrk/SD/__target/class_2"
+    },
+    {
+        "instance_prompt":      "nlwx",
+        "class_prompt":         "jenniferaniston",
+        "instance_data_dir":    "/mnt/c/_wrk/SD/__target/source_3",
+        "class_data_dir":       "/mnt/c/_wrk/SD/__target/class_3"
     }
 ]
