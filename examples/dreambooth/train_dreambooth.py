@@ -444,29 +444,6 @@ def get_full_repo_name(model_id: str, organization: Optional[str] = None, token:
         return f"{organization}/{model_id}"
 
 
-def get_sanity_dir_name(prompt: str, index: int, isSanity: bool):
-    prompt_cleaned = re.sub(r"[^a-zA-Z0-9 ]", "", prompt)
-    prompt_cleaned = re.sub(r"\s+", '_', prompt_cleaned)
-    prompt_trimmed = (prompt_cleaned, prompt_cleaned[0:80])[len(prompt_cleaned) > 80]
-    dir_name = ("prompt", "sanity")[isSanity]
-    final_prompt = f"{index:02d}_{dir_name}_{prompt_trimmed}"
-    return final_prompt
-
-
-def get_sanity_sample_dir_path(basepath: str, nsavesampleindex: int, prompt: str, manualsanityindex: int):
-    #/_samples/
-    #/000_sample_group/
-    #/01_sanity_chottam/
-
-    #basepath
-    #nsavesampleindex
-    #get_sanity_dir_name(manualsanityindex, prompt)
-
-    sanitydirname = get_sanity_dir_name(prompt, manualsanityindex)
-    final_path = os.path.join(basepath, f"{nsavesampleindex:03d}_samples_group/{sanitydirname}")
-    return final_path
-
-
 
 def main(args):
     logging_dir = Path(args.output_dir, "0", args.logging_dir)
@@ -834,6 +811,21 @@ def main(args):
             generator=g_cuda
         ).images
         images[0].save(sanity_dir , f"{step:05d}.png")
+
+
+    def get_sanity_sample_dir_path(basepath: str, nSaveSampleIndex: int, prompt: str, manualSanityIndex: int):
+        sanityDirName = get_sanity_dir_name(prompt, manualSanityIndex)
+        final_path = os.path.join(basepath, f"{nSaveSampleIndex:03d}_samples_group/{sanityDirName}")
+        return final_path
+
+
+    def get_sanity_dir_name(prompt: str, index: int):
+        prompt_cleaned = re.sub(r"[^a-zA-Z0-9 ]", "", prompt)
+        prompt_cleaned = re.sub(r"\s+", '_', prompt_cleaned)
+        prompt_trimmed = (prompt_cleaned, prompt_cleaned[0:80])[len(prompt_cleaned) > 80]
+        final_prompt = f"{index:02d}_sanity_{prompt_trimmed}"
+        return final_prompt
+
 
 
     # Only show the progress bar once on each machine.
