@@ -453,31 +453,17 @@ def get_sanity_dir_name(prompt: str, index: int, isSanity: bool):
     return final_prompt
 
 
-def get_prompt_sample_dir_path(basePath: str, nSaveSampleIndex: int, prompt: str, manualSanityIndex: int):
-    #/_samples/
-    #/000_sample_group/
-    #/00_prompt_chottam/
-
-    #basePath
-    #nSaveSampleIndex
-    #get_sanity_dir_name(manualSanityIndex, prompt)
-
-    sanityDirName = get_sanity_dir_name(prompt, 0, isSanity=False)
-    final_path = os.path.join(basePath, f"{nSaveSampleIndex:03d}_samples_group/{sanityDirName}")
-    return final_path
-
-
-def get_sanity_sample_dir_path(basePath: str, nSaveSampleIndex: int, prompt: str, manualSanityIndex: int):
+def get_sanity_sample_dir_path(basepath: str, nsavesampleindex: int, prompt: str, manualsanityindex: int):
     #/_samples/
     #/000_sample_group/
     #/01_sanity_chottam/
 
-    #basePath
-    #nSaveSampleIndex
-    #get_sanity_dir_name(manualSanityIndex, prompt)
+    #basepath
+    #nsavesampleindex
+    #get_sanity_dir_name(manualsanityindex, prompt)
 
-    sanityDirName = get_sanity_dir_name(prompt, manualSanityIndex, isSanity=True)
-    final_path = os.path.join(basePath, f"{nSaveSampleIndex:03d}_samples_group/{sanityDirName}")
+    sanitydirname = get_sanity_dir_name(prompt, manualsanityindex)
+    final_path = os.path.join(basepath, f"{nsavesampleindex:03d}_samples_group/{sanitydirname}")
     return final_path
 
 
@@ -522,6 +508,18 @@ def main(args):
     else:
         with open(args.concepts_list, "r") as f:
             args.concepts_list = json.load(f)
+
+    # vazzda shame code
+    # sanity prompts list
+    if args.sanity_list is None:
+        args.concepts_list = [
+            {
+                "prompt": args.instance_prompt
+            }
+        ]
+    else:
+        with open(args.sanity_list, "r") as f:
+            args.sanity_list = json.load(f)
 
     if args.with_prior_preservation:
         pipeline = None
@@ -767,39 +765,17 @@ def main(args):
     # Train!
     total_batch_size = args.train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
 
-    logger.info("***** Running training *****")
-    logger.info(f"  Num examples = {len(train_dataset)}")
-    logger.info(f"  Num batches each epoch = {len(train_dataloader)}")
-    logger.info(f"  Num Epochs = {args.num_train_epochs}")
-    logger.info(f"  Instantaneous batch size per device = {args.train_batch_size}")
-    logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
-    logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
-    logger.info(f"  Total optimization steps = {args.max_train_steps}")
+    logger.info("***** running training *****")
+    logger.info(f"  num examples = {len(train_dataset)}")
+    logger.info(f"  num batches each epoch = {len(train_dataloader)}")
+    logger.info(f"  num epochs = {args.num_train_epochs}")
+    logger.info(f"  instantaneous batch size per device = {args.train_batch_size}")
+    logger.info(f"  total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
+    logger.info(f"  gradient accumulation steps = {args.gradient_accumulation_steps}")
+    logger.info(f"  total optimization steps = {args.max_train_steps}")
+
 
     def save_weights(step):
-        # Vazzda's shame code
-        # Creating dir for examples
-        path_to_root_samples_dir = os.path.join(args.output_dir, "_samples")
-        os.makedirs(path_to_root_samples_dir, exist_ok=True)
-
-        for i in range(args.n_save_sample):
-            prompt_dir = get_prompt_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt, 0)
-            os.makedirs(prompt_dir, exist_ok=True)
-
-            if args.save_sample_prompt_sanity_01:
-                sample_sanity_dir_01 = get_sanity_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt_sanity_01, 1)
-                os.makedirs(sample_sanity_dir_01, exist_ok=True)
-            if args.save_sample_prompt_sanity_02:
-                sample_sanity_dir_02 = get_sanity_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt_sanity_02, 2)
-                os.makedirs(sample_sanity_dir_02, exist_ok=True)
-            if args.save_sample_prompt_sanity_03:
-                sample_sanity_dir_03 = get_sanity_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt_sanity_03, 3)
-                os.makedirs(sample_sanity_dir_03, exist_ok=True)
-            if args.save_sample_prompt_sanity_04:
-                sample_sanity_dir_04 = get_sanity_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt_sanity_04, 4)
-                os.makedirs(sample_sanity_dir_04, exist_ok=True)
-
-
         # Create the pipeline using using the trained modules and save it.
         if accelerator.is_main_process:
             if args.train_text_encoder:
@@ -826,106 +802,40 @@ def main(args):
             pipeline.save_pretrained(save_dir)
             with open(os.path.join(save_dir, "args.json"), "w") as f:
                 json.dump(args.__dict__, f, indent=2)
-
-            if args.save_sample_prompt is not None:
-                pipeline = pipeline.to(accelerator.device)
-                g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
-                pipeline.set_progress_bar_config(disable=True)
-                sample_dir = os.path.join(save_dir, "samples")
-                os.makedirs(sample_dir, exist_ok=True)
-                with torch.autocast("cuda"), torch.inference_mode():
-                    for i in tqdm(range(args.n_save_sample), desc="Generating samples"):
-                        images = pipeline(
-                            args.save_sample_prompt,
-                            negative_prompt=args.save_sample_negative_prompt,
-                            guidance_scale=args.save_guidance_scale,
-                            num_inference_steps=args.save_infer_steps,
-                            generator=g_cuda
-                        ).images
-                        path_to_save = get_prompt_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt, 0)
-                        images[0].save(os.path.join(path_to_save , f"{step:05d}.png"))
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
-
-            if args.save_sample_prompt_sanity_01 is not None:
-                pipeline = pipeline.to(accelerator.device)
-                g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
-                pipeline.set_progress_bar_config(disable=True)
-                sample_dir = os.path.join(save_dir, "samples")
-                os.makedirs(sample_dir, exist_ok=True)
-                with torch.autocast("cuda"), torch.inference_mode():
-                    for i in tqdm(range(args.n_save_sample), desc="Generating samples"):
-                        images = pipeline(
-                            args.save_sample_prompt_sanity_01,
-                            negative_prompt=args.save_sample_negative_prompt,
-                            guidance_scale=args.save_guidance_scale,
-                            num_inference_steps=args.save_infer_steps,
-                            generator=g_cuda
-                        ).images
-                        path_to_save = get_sanity_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt_sanity_01, 1)
-                        images[0].save(os.path.join(path_to_save , f"{step:05d}.png"))
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
-            if args.save_sample_prompt_sanity_02 is not None:
-                pipeline = pipeline.to(accelerator.device)
-                g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
-                pipeline.set_progress_bar_config(disable=True)
-                sample_dir = os.path.join(save_dir, "samples")
-                os.makedirs(sample_dir, exist_ok=True)
-                with torch.autocast("cuda"), torch.inference_mode():
-                    for i in tqdm(range(args.n_save_sample), desc="Generating samples"):
-                        images = pipeline(
-                            args.save_sample_prompt_sanity_02,
-                            negative_prompt=args.save_sample_negative_prompt,
-                            guidance_scale=args.save_guidance_scale,
-                            num_inference_steps=args.save_infer_steps,
-                            generator=g_cuda
-                        ).images
-                        path_to_save = get_sanity_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt_sanity_02, 2)
-                        images[0].save(os.path.join(path_to_save , f"{step:05d}.png"))
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
-            if args.save_sample_prompt_sanity_03 is not None:
-                pipeline = pipeline.to(accelerator.device)
-                g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
-                pipeline.set_progress_bar_config(disable=True)
-                sample_dir = os.path.join(save_dir, "samples")
-                os.makedirs(sample_dir, exist_ok=True)
-                with torch.autocast("cuda"), torch.inference_mode():
-                    for i in tqdm(range(args.n_save_sample), desc="Generating samples"):
-                        images = pipeline(
-                            args.save_sample_prompt_sanity_03,
-                            negative_prompt=args.save_sample_negative_prompt,
-                            guidance_scale=args.save_guidance_scale,
-                            num_inference_steps=args.save_infer_steps,
-                            generator=g_cuda
-                        ).images
-                        path_to_save = get_sanity_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt_sanity_03, 3)
-                        images[0].save(os.path.join(path_to_save , f"{step:05d}.png"))
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
-            if args.save_sample_prompt_sanity_04 is not None:
-                pipeline = pipeline.to(accelerator.device)
-                g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
-                pipeline.set_progress_bar_config(disable=True)
-                sample_dir = os.path.join(save_dir, "samples")
-                os.makedirs(sample_dir, exist_ok=True)
-                with torch.autocast("cuda"), torch.inference_mode():
-                    for i in tqdm(range(args.n_save_sample), desc="Generating samples"):
-                        images = pipeline(
-                            args.save_sample_prompt_sanity_04,
-                            negative_prompt=args.save_sample_negative_prompt,
-                            guidance_scale=args.save_guidance_scale,
-                            num_inference_steps=args.save_infer_steps,
-                            generator=g_cuda
-                        ).images
-                        path_to_save = get_sanity_sample_dir_path(path_to_root_samples_dir, i, args.save_sample_prompt_sanity_04, 4)
-                        images[0].save(os.path.join(path_to_save , f"{step:05d}.png"))
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
-
-            del pipeline
+            if args.sanity_list is not None:
+                generate_sanity_results(pipeline, step)
             print(f"[*] Weights saved at {save_dir}")
+
+
+    def generate_sanity_results (pipeline, step):
+        pipeline = pipeline.to(accelerator.device)
+        g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
+        pipeline.set_progress_bar_config(disable=True)
+
+        with torch.autocast("cuda"), torch.inference_mode():
+            for sample_index in tqdm(range(args.n_save_sample), desc="Generating samples"):
+                for sanity_index, sanity in enumerate(args.sanity_list):
+                    generate_sanity_result(pipeline, sanity, step, sample_index, sanity_index)
+
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        del pipeline
+
+
+    def generate_sanity_result(pipeline, sanity, step, sample_index, sanity_index):
+        path_to_root_samples_dir = os.path.join(args.output_dir, "_samples")
+        sanity_dir = get_sanity_sample_dir_path(path_to_root_samples_dir, sample_index, sanity.prompt, sanity_index)
+        os.makedirs(sanity_dir, exist_ok=True)
+
+        images = pipeline(
+            args.sanity.prompt,
+            negative_prompt=sanity.negative_prompt,
+            guidance_scale=args.save_guidance_scale,
+            num_inference_steps=args.save_infer_steps,
+            generator=g_cuda
+        ).images
+        images[0].save(sanity_dir , f"{step:05d}.png")
+
 
     # Only show the progress bar once on each machine.
     progress_bar = tqdm(range(args.max_train_steps), disable=not accelerator.is_local_main_process)
