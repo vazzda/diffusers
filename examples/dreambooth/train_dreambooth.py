@@ -765,15 +765,14 @@ def main(args):
     # Train!
     total_batch_size = args.train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
 
-    logger.info("***** running training *****")
-    logger.info(f"  num examples = {len(train_dataset)}")
-    logger.info(f"  num batches each epoch = {len(train_dataloader)}")
-    logger.info(f"  num epochs = {args.num_train_epochs}")
-    logger.info(f"  instantaneous batch size per device = {args.train_batch_size}")
-    logger.info(f"  total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
-    logger.info(f"  gradient accumulation steps = {args.gradient_accumulation_steps}")
-    logger.info(f"  total optimization steps = {args.max_train_steps}")
-
+    logger.info("***** Running training *****")
+    logger.info(f"  Num examples = {len(train_dataset)}")
+    logger.info(f"  Num batches each epoch = {len(train_dataloader)}")
+    logger.info(f"  Num Epochs = {args.num_train_epochs}")
+    logger.info(f"  Instantaneous batch size per device = {args.train_batch_size}")
+    logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
+    logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
+    logger.info(f"  Total optimization steps = {args.max_train_steps}")
 
     def save_weights(step):
         # Create the pipeline using using the trained modules and save it.
