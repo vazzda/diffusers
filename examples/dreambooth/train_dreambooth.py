@@ -94,28 +94,10 @@ def parse_args(input_args=None):
         help="The prompt used to generate sample outputs to save.",
     )
     parser.add_argument(
-        "--save_sample_prompt_sanity_01",
+        "--sanity_list",
         type=str,
         default=None,
-        help="The prompt used to generate sanity samples.",
-    )
-    parser.add_argument(
-        "--save_sample_prompt_sanity_02",
-        type=str,
-        default=None,
-        help="The prompt used to generate sanity samples.",
-    )
-    parser.add_argument(
-        "--save_sample_prompt_sanity_03",
-        type=str,
-        default=None,
-        help="The prompt used to generate sanity samples.",
-    )
-    parser.add_argument(
-        "--save_sample_prompt_sanity_04",
-        type=str,
-        default=None,
-        help="The prompt used to generate sanity samples.",
+        help="List of sanity promts.",
     )
     parser.add_argument(
         "--save_sample_negative_prompt",
@@ -168,6 +150,12 @@ def parse_args(input_args=None):
         type=str,
         default="text-inversion-model",
         help="The output directory where the model predictions and checkpoints will be written.",
+    )
+    parser.add_argument(
+        "--sanity_output_dir",
+        type=str,
+        default="text-inversion-model",
+        help="",
     )
     parser.add_argument("--seed", type=int, default=None, help="A seed for reproducible training.")
     parser.add_argument(
@@ -788,29 +776,30 @@ def main(args):
         g_cuda = torch.Generator(device=accelerator.device).manual_seed(args.seed)
         pipeline.set_progress_bar_config(disable=True)
 
+        print(f"[*] Generating sanity samples")
         with torch.autocast("cuda"), torch.inference_mode():
             for sample_index in tqdm(range(args.n_save_sample), desc="Generating samples"):
-                for sanity_index, sanity in enumerate(args.sanity_list):
-                    generate_sanity_result(pipeline, sanity, step, sample_index, sanity_index)
+                for sanity_index, sanity in tqdm(enumerate(args.sanity_list), desc="Generate iteratic samples"):
+                    generate_sanity_result(pipeline, g_cuda, sanity, step, sample_index, sanity_index)
 
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
         del pipeline
 
 
-    def generate_sanity_result(pipeline, sanity, step, sample_index, sanity_index):
-        path_to_root_samples_dir = os.path.join(args.output_dir, "_samples")
-        sanity_dir = get_sanity_sample_dir_path(path_to_root_samples_dir, sample_index, sanity.prompt, sanity_index)
+    def generate_sanity_result(pipeline, g_cuda, sanity, step, sample_index, sanity_index):
+        path_to_root_samples_dir = os.path.join(args.sanity_output_dir, "_samples")
+        sanity_dir = get_sanity_sample_dir_path(path_to_root_samples_dir, sample_index, sanity["prompt"], sanity_index)
         os.makedirs(sanity_dir, exist_ok=True)
 
         images = pipeline(
-            args.sanity.prompt,
-            negative_prompt=sanity.negative_prompt,
+            sanity["prompt"],
+            negative_prompt=sanity["negative_prompt"],
             guidance_scale=args.save_guidance_scale,
             num_inference_steps=args.save_infer_steps,
             generator=g_cuda
         ).images
-        images[0].save(sanity_dir , f"{step:05d}.png")
+        images[0].save(os.path.join(sanity_dir , f"{step:05d}.png"))
 
 
     def get_sanity_sample_dir_path(basepath: str, nSaveSampleIndex: int, prompt: str, manualSanityIndex: int):
@@ -823,7 +812,7 @@ def main(args):
         prompt_cleaned = re.sub(r"[^a-zA-Z0-9 ]", "", prompt)
         prompt_cleaned = re.sub(r"\s+", '_', prompt_cleaned)
         prompt_trimmed = (prompt_cleaned, prompt_cleaned[0:80])[len(prompt_cleaned) > 80]
-        final_prompt = f"{index:02d}_sanity_{prompt_trimmed}"
+        final_prompt = f"{index:02d}_{prompt_trimmed}"
         return final_prompt
 
 
@@ -915,6 +904,8 @@ def main(args):
                 accelerator.log(logs, step=global_step)
 
             if global_step > 0 and not global_step % args.save_interval and global_step >= args.save_min_steps:
+                save_weights(global_step)
+            elif global_step == 1 :
                 save_weights(global_step)
 
             progress_bar.update(1)
