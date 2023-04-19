@@ -1,0 +1,62 @@
+[
+    {
+        "prompt":                  "qpgl meganfox",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "ohwx margotrobbie",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "pzrq gerardbutler",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "close up portrait of qpgl meganfox, falling leafs, forest creatures in the background, professional majestic oil painting by Ed Blinkey, Atey Ghailan, Studio Ghibli, by Jeremy Mann, Greg Manchess, Antonio Moro, Intricate, High Detail, Sharp focus, dramatic, photorealistic painting art by midjourney and greg rutkowski",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "close up portrait of ohwx margotrobbie, falling leafs, forest creatures in the background, professional majestic oil painting by Ed Blinkey, Atey Ghailan, Studio Ghibli, by Jeremy Mann, Greg Manchess, Antonio Moro, Intricate, High Detail, Sharp focus, dramatic, photorealistic painting art by midjourney and greg rutkowski",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "close up portrait of pzrq gerardbutler, falling leafs, forest creatures in the background, professional majestic oil painting by Ed Blinkey, Atey Ghailan, Studio Ghibli, by Jeremy Mann, Greg Manchess, Antonio Moro, Intricate, High Detail, Sharp focus, dramatic, photorealistic painting art by midjourney and greg rutkowski",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "qpgl meganfox, complex 3d render ultra detailed beautiful death angel, biomechanical cyborg, analog 150 mm lens, beautiful natural soft rim light, crystal feathers, roots, fine foliage lace, colorful details, Boris Bidjan Saberi outfit, pearl earrings, piercing, art nouveau fashion embroidered, intricate details, mesh wire, mandelbrot fractal",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "ohwx margotrobbie, complex 3d render ultra detailed beautiful death angel, biomechanical cyborg, analog 150 mm lens, beautiful natural soft rim light, crystal feathers, roots, fine foliage lace, colorful details, Boris Bidjan Saberi outfit, pearl earrings, piercing, art nouveau fashion embroidered, intricate details, mesh wire, mandelbrot fractal",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "pzrq gerardbutler, complex 3d render ultra detailed beautiful death angel, biomechanical cyborg, analog 150 mm lens, beautiful natural soft rim light, crystal feathers, roots, fine foliage lace, colorful details, Boris Bidjan Saberi outfit, pearl earrings, piercing, art nouveau fashion embroidered, intricate details, mesh wire, mandelbrot fractal",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "qpgl meganfox, full body, looking at viewer, symmetric, eyes closed, slight smile, spirtual awakening, intricate details, cosmic, ethereal, mystical, complicated environment, brush stokes, illuminating lights, Greg Rutkowski, RHADS, Beeple, Makoto Shinkai, Lois van Baarle, Ilya Kuvshinov",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "ohwx margotrobbie,full body, looking at viewer, symmetric, eyes closed, slight smile, spirtual awakening, intricate details, cosmic, ethereal, mystical, complicated environment, brush stokes, illuminating lights, Greg Rutkowski, RHADS, Beeple, Makoto Shinkai, Lois van Baarle, Ilya Kuvshinov",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "pzrq gerardbutler, full body, looking at viewer, symmetric, eyes closed, slight smile, spirtual awakening, intricate details, cosmic, ethereal, mystical, complicated environment, brush stokes, illuminating lights, Greg Rutkowski, RHADS, Beeple, Makoto Shinkai, Lois van Baarle, Ilya Kuvshinov",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "fashion photography portrait of blue qpgl meganfox, in blue lush jungle with flowers and birds, 3d render, cgi, symetrical, octane render, 35mm, bokeh, 9:16, (intricate details:1.12), hdr, (intricate details, hyperdetailed:1.15), (natural skin texture, hyperrealism, soft light, sharp:1.2)",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "fashion photography portrait of blue ohwx margotrobbie, in blue lush jungle with flowers and birds, 3d render, cgi, symetrical, octane render, 35mm, bokeh, 9:16, (intricate details:1.12), hdr, (intricate details, hyperdetailed:1.15), (natural skin texture, hyperrealism, soft light, sharp:1.2)",
+        "negative_prompt":         ""
+    },
+    {
+        "prompt":                  "fashion photography portrait of blue pzrq gerardbutler, in blue lush jungle with flowers and birds, 3d render, cgi, symetrical, octane render, 35mm, bokeh, 9:16, (intricate details:1.12), hdr, (intricate details, hyperdetailed:1.15), (natural skin texture, hyperrealism, soft light, sharp:1.2)",
+        "negative_prompt":         ""
+    }
+]
