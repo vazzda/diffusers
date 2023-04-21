@@ -788,8 +788,8 @@ def main(args):
 
         print(f"[*] Generating sanity samples")
         with torch.autocast("cuda"), torch.inference_mode():
-            for sample_index in tqdm(range(args.n_save_sample), desc="Generating samples"):
-                for sanity_index, sanity in tqdm(enumerate(args.sanity_list), desc="Generate iteratic samples"):
+            for sample_index in range(args.n_save_sample):
+                for sanity_index, sanity in enumerate(args.sanity_list):
                     generate_sanity_result(pipeline, g_cuda, sanity, step, sample_index, sanity_index)
 
         if torch.cuda.is_available():
@@ -802,9 +802,27 @@ def main(args):
         sanity_dir = get_sanity_sample_dir_path(path_to_root_samples_dir, sample_index, sanity["prompt"], sanity_index)
         os.makedirs(sanity_dir, exist_ok=True)
 
+        class bcolors:
+            HEADER = '\033[95m'
+            OKBLUE = '\033[94m'
+            OKCYAN = '\033[96m'
+            OKGREEN = '\033[92m'
+            WARNING = '\033[93m'
+            ENDC = '\033[0m'
+        sanity_length = len(args.sanity_list)
+        human_sample_index = sample_index + 1
+        human_sanity_index = sanity_index + 1
+        step_message = f"[*] STEP: {bcolors.HEADER}{step} of {args.max_train_steps}{bcolors.ENDC}, "
+        sample_i_message = f"SAMPLE:{bcolors.OKGREEN}{human_sample_index:02d}/{args.n_save_sample:02d}{bcolors.ENDC}, "
+        sanity_i_message = f"SANITY: {bcolors.OKCYAN}{human_sanity_index:02d}/{sanity_length:02d}{bcolors.ENDC}"
+        full_message = step_message + sample_i_message + sanity_i_message
+        print(full_message, end="\r")
+
         images = pipeline(
             sanity["prompt"],
             negative_prompt=sanity["negative_prompt"],
+            height=sanity["height"],
+            width=sanity["width"],
             guidance_scale=args.save_guidance_scale,
             num_inference_steps=args.save_infer_steps,
             generator=g_cuda
