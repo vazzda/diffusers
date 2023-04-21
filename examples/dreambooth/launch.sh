@@ -23,9 +23,10 @@ accelerate launch train_dreambooth.py \
   --lr_scheduler="constant" \
   --lr_warmup_steps=0 \
   --sample_batch_size=1 \
-  --n_save_sample=4 \
-  --max_train_steps=3150 \
-  --save_interval=200 \
+  --n_save_sample=3 \
+  --max_train_steps=1800 \
+  --save_interval=5 \
+  --keep_interval=25 \
   --save_first_step \
   --not_cache_latents \
   --concepts_list="concepts_list.json" \

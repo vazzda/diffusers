@@ -6,6 +6,7 @@ import json
 import logging
 import math
 import os
+import shutil
 import re
 from contextlib import nullcontext
 from pathlib import Path
@@ -252,6 +253,7 @@ def parse_args(input_args=None):
     )
     parser.add_argument("--log_interval", type=int, default=10, help="Log every N steps.")
     parser.add_argument("--save_interval", type=int, default=10_000, help="Save weights every N steps.")
+    parser.add_argument("--keep_interval", type=int, default=0, help="Keep weights every N steps.")
     parser.add_argument("--save_min_steps", type=int, default=0, help="Start saving weights after N steps.")
     parser.add_argument(
         "--mixed_precision",
@@ -770,7 +772,13 @@ def main(args):
                 json.dump(args.__dict__, f, indent=2)
             if args.sanity_list is not None and args.n_save_sample > 0:
                 generate_sanity_results(pipeline, step)
-            print(f"[*] Weights saved at {save_dir}")
+
+            if args.keep_interval and step % args.keep_interval:
+                #clean_weights(global_step)
+                shutil.rmtree(save_dir)
+                print(f"[*] Weight was used for image generations and was cleaned afterwards")
+            else:
+                print(f"[*] Weights saved at {save_dir}")
 
 
     def generate_sanity_results (pipeline, step):
