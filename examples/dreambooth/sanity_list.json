@@ -1,6 +1,104 @@
 [
     {
         "prompt": "portrait of zwx margotrobbie, falling leafs, forest creatures in the background, professional majestic oil painting by Ed Blinkey, Atey Ghailan, Studio Ghibli",
+        "width": 512,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "zwx margotrobbie in  a spider-man suit, sexy, (mini skirt:1.1), belt, deep neckline, cheeky smile, in new york, shot on dslr, detailed face, big hips, amazing body, amazing legs, cinematography, maximum details, neutral colors, hdr, muted colors, soft cinematic light, insane details, intricate details",
+        "width": 512,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "zwx margotrobbie under drizzling rain, (elegant), transparent white dress, forest moss, (freckles:0.8), flowers feld, curly red hair, magical atmosphere, (short hair), ((detailed skin, skin texture)), ultradetailed",
+        "width": 768,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "photo of zwx margotrobbie, Hyper detailed ultra sharp, bloodwave, ornate, intricate, digital painting, concept art, smooth, sharp focus, illustration, full body, 8 k, long flowing hair, (((horror))), woman",
+        "width": 768,
+        "height": 512,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "zwx margotrobbie hiding in shattered industrial atmosphere, post apocalyptic ruined city, black tattered shirt, high detail, black colors,( cyberpunk), hdr, 8k, ultra realistic, belly, (skulls on the ground)",
+        "width": 512,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "zwx margotrobbie modelshoot style, (extremely detailed CG unity 8k wallpaper), medieval queen, green vale, golden crown, diamonds, medieval architecture, professional majestic oil painting",
+        "width": 768,
+        "height": 512,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "fashion photography portrait of zwx margotrobbie avatar, in blue lush jungle with flowers and birds, 3d render, cgi, symetrical, octane render, 35mm, bokeh, 9:16, (intricate details:1.12), hdr",
+        "width": 512,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "8k, masterpiece, best quality, extremely detailed, intricated lights and shadow, 8k wallpaper, glowing, biomechanical cyborg",
+        "width": 512,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "zwx margotrobbie angel, best quality, looking at viewer, (delicate details:1.5), white long hair, (((angel,halo,heaven))),full-body, intricate details, (detailed background), photogenic pose, photogenic expression, symmetry",
+        "width": 512,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "side profile for a zwx margotrobbie sitting in a shallow water pond, surrounded by lily pads and tall reeds, anime style, japan style",
+        "width": 768,
+        "height": 512,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "hexagon, detailed face of zwx margotrobbie, smile,chinese style,immortal demeanor, peaks, deep ravines, stars, turbulent winds, soaring dragons, cross-shaped sword, purple clouds, portal, smoke, flames, mystical runes, ancient robe, red petals, halo, lightning,thunder",
+        "width": 768,
+        "height": 512,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "zwx margotrobbie, shuimobysim, traditional chinese ink painting, lotus, hanfu, maxiskit, dress, black hair, long hair, fox ears, white, bikini, fish, many fish near zwx margotrobbie",
+        "width": 512,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "chibi zwx margotrobbie, masterpiece, best quality,(ultra-detailed), (full body:1.2),princess,cute,(floating city:1.2),black long hair, red eyes, earring,(china dress), choker",
+        "width": 512,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "zwx margotrobbie witch on a broom, masterpiece, best quality, ultra-detailed, illustration, fantasy, flying, broom, night sky, outdoors, magic, spells, moon, stars, clouds, folklore",
+        "width": 768,
+        "height": 512,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "(white background:1.5), (bottle bottom:0.9), zwx margotrobbie, mid shot, full body, butterflies, floating petal, stone fragment, beautiful detailed water, cloud, sun, dusk, sunset, beautiful detailed cloud,ocean, sea waves, water splashes",
+        "width": 768,
+        "height": 512,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "masterpiece, best quality, [(white background:1.5),::5] (circle:0.9), zwx margotrobbie, in dynamic pose, (beautiful detailed colorful splash art:1.4), rotational symmetry",
+        "width": 512,
+        "height": 768,
+        "negative_prompt": ""
+    },
+    {
+        "prompt": "zwx margotrobbie on street smiling, backpack, ponytails, epic realistic, photo, vignette, faded, complex stuff around, intricate background, soaking wet, neutral colors, hdr, muted colors, intricate scene, artstation",
+        "width": 512,
+        "height": 768,
         "negative_prompt": ""
     }
 ]
