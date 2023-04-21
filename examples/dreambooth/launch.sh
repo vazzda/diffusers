@@ -1,14 +1,13 @@
 #export MODEL_NAME="/home/vazzda/sd/_models/runwayml/stable-diffusion-v1-5"
 #export MODEL_NAME="/home/vazzda/sd/_models/Deliberate"
-#export MODEL_NAME="/home/vazzda/sd/models/DreamShaper3"
-export MODEL_NAME="runwayml/stable-diffusion-v1-5"
+#export MODEL_NAME="runwayml/stable-diffusion-v1-5"
+export MODEL_NAME="/home/vazzda/sd/models/DreamShaper3"
 export OUTPUT_DIR="/home/vazzda/sd/training"
 #export SANITY_OUTPUT_DIR="/mnt/c/_wrk/sd/__target/_results"
 export SANITY_OUTPUT_DIR="/home/vazzda/sd/training/_results"
 
 accelerate launch train_dreambooth.py \
   --pretrained_model_name_or_path=$MODEL_NAME \
-  --pretrained_vae_name_or_path="stabilityai/sd-vae-ft-mse" \
   --output_dir=$OUTPUT_DIR \
   --sanity_output_dir=$SANITY_OUTPUT_DIR \
   --revision="fp16" \
