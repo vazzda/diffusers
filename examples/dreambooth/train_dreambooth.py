@@ -130,6 +130,12 @@ def parse_args(input_args=None):
         help="Flag to pad tokens to length 77.",
     )
     parser.add_argument(
+        "--save_first_step",
+        default=False,
+        action="store_true",
+        help="Flag to pad tokens to length 77.",
+    )
+    parser.add_argument(
         "--with_prior_preservation",
         default=False,
         action="store_true",
@@ -320,6 +326,8 @@ class DreamBoothDataset(Dataset):
                 if x.is_file() and not str(x).endswith(".txt")
             ]
             self.instance_images_path.extend(inst_img_path)
+            print(f"[*] Image {inst_img_path}")
+
 
             if with_prior_preservation:
                 class_img_path = [(x, concept["class_prompt"]) for x in Path(concept["class_data_dir"]).iterdir() if x.is_file()]
@@ -476,13 +484,7 @@ def main(args):
 
     # vazzda shame code
     # sanity prompts list
-    if args.sanity_list is None:
-        args.concepts_list = [
-            {
-                "prompt": args.instance_prompt
-            }
-        ]
-    else:
+    if args.sanity_list is not None:
         with open(args.sanity_list, "r") as f:
             args.sanity_list = json.load(f)
 
@@ -737,7 +739,7 @@ def main(args):
     logger.info(f"  Instantaneous batch size per device = {args.train_batch_size}")
     logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
     logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
-    logger.info(f"  Total optimization steps = {args.max_train_steps}")
+    logger.info(f"  Pretrained model = {args.pretrained_model_name_or_path}")
 
     def save_weights(step):
         # Create the pipeline using using the trained modules and save it.
@@ -766,7 +768,7 @@ def main(args):
             pipeline.save_pretrained(save_dir)
             with open(os.path.join(save_dir, "args.json"), "w") as f:
                 json.dump(args.__dict__, f, indent=2)
-            if args.sanity_list is not None:
+            if args.sanity_list is not None and args.n_save_sample > 0:
                 generate_sanity_results(pipeline, step)
             print(f"[*] Weights saved at {save_dir}")
 
@@ -905,7 +907,7 @@ def main(args):
 
             if global_step > 0 and not global_step % args.save_interval and global_step >= args.save_min_steps:
                 save_weights(global_step)
-            elif global_step == 1 :
+            elif global_step == 1 and args.save_first_step:
                 save_weights(global_step)
 
             progress_bar.update(1)

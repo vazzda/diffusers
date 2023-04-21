@@ -1,8 +1,8 @@
 [
     {
-        "instance_prompt":      "ohwx margotrobbie",
-        "class_prompt":         "margotrobbie",
-        "instance_data_dir":    "/mnt/c/_wrk/SD/__target/source_2",
-        "class_data_dir":       "/mnt/c/_wrk/SD/__target/class_2"
+        "instance_prompt":      "photo of zwx margotrobbie",
+        "class_prompt":         "photo of a margotrobbie",
+        "instance_data_dir":    "/mnt/c/_wrk/sd/__target/source_2",
+        "class_data_dir":       "/mnt/c/_wrk/sd/__target/class_2"
     }
 ]

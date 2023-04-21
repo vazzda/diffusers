@@ -1,8 +1,8 @@
 #!/bin/bash
 
 export FROM_DIR="/home/vazzda/sd/training/"
-export TO_DIR="/home/vazzda/sd/stable-diffusion-webui/models/Stable-diffusion/"
-export ORIGINAL_SCTPR_LOCATION="/home/vazzda/sd/diffusers/scripts/convert_diffusers_to_original_stable_diffusion.py"
+export TO_DIR="/home/vazzda/sd/automatic1111/models/Stable-diffusion/"
+export ORIGINAL_SCTPR_LOCATION="/home/vazzda/sd/difs/scripts/convert_diffusers_to_original_stable_diffusion.py"
 
 while [ $# -gt 0 ]; do
     if [[ $1 == "--"* ]]; then
